@@ -96,7 +96,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	//Press the button PC13 once to change the state of the LED2
+	//Pressing the button PC13 to change the state of the LED2
   while (1)
   {
     /* USER CODE END WHILE */
