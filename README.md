@@ -4,4 +4,5 @@ This project aims to document the learning process of STM32L476RG and Hardware A
 
 CONTENTS:
 1. STM32L476RG_GPIO: Pressing the button PC13 to change the state of the LED2
-2. STM32L476RG_GPIO: Sending and reciving interupt by USART(Asynchronous)
+2. STM32L476RG_USART_INTERUPT: Sending and reciving interupt by USART(Asynchronous)
+3. STM32L476RG_PWM: Breathing light
