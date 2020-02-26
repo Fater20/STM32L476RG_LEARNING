@@ -46,10 +46,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint32_t capture_Buf[3] = {0};   //Capture value
-uint8_t capture_Cnt = 0;    //Status flag
-uint32_t high_time;   //High level time
-uint32_t low_time;   //Low level time
+uint32_t capture_Buf[3] = {0};	//Capture value
+uint8_t capture_Cnt = 0;    		//Status flag
+uint8_t overload_Cnt = 0;				//Overload flag
+uint32_t high_time;   					//High level time
+uint32_t low_time;   						//Low level time
 double HL_time;
 double LL_time;
 double fre;
@@ -60,41 +61,60 @@ double duty;
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
+/**
+  * @brief TIM2 Period Interupt Callback Function
+  * @param htim
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if (htim->Instance == htim2.Instance)
+	{
+		overload_Cnt++;
+	}
+}
+
+/**
+  * @brief TIM2 Capture Interupt Callback Function
+  * @param htim
+  * @retval None
+  */
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
 	
-	if(TIM2 == htim->Instance)
+	if (htim->Instance == htim2.Instance)
 	{
 		switch(capture_Cnt){
 			case 0:
-				capture_Buf[0] = HAL_TIM_ReadCapturedValue(&htim2,TIM_CHANNEL_1);//Get capture value now
-				__HAL_TIM_SET_CAPTUREPOLARITY(&htim2,TIM_CHANNEL_1,TIM_ICPOLARITY_FALLING);  //设置为下降沿捕获
+				capture_Buf[0] = HAL_TIM_ReadCapturedValue(&htim2,TIM_CHANNEL_1);						//Get capture value now
+				__HAL_TIM_SET_CAPTUREPOLARITY(&htim2,TIM_CHANNEL_1,TIM_ICPOLARITY_FALLING);	//Set to falling edge capture
 				capture_Cnt++;
 				break;
 			case 1:
-				capture_Buf[1] = HAL_TIM_ReadCapturedValue(&htim2,TIM_CHANNEL_1);//Get capture value now
-				__HAL_TIM_SET_CAPTUREPOLARITY(&htim2,TIM_CHANNEL_1,TIM_ICPOLARITY_RISING);  //设置为上升沿捕获
+				capture_Buf[1] = HAL_TIM_ReadCapturedValue(&htim2,TIM_CHANNEL_1);						//Get capture value now
+				__HAL_TIM_SET_CAPTUREPOLARITY(&htim2,TIM_CHANNEL_1,TIM_ICPOLARITY_RISING);  //Set to rising edge capture
 				capture_Cnt++;    
 				break;
 			case 2:
-				capture_Buf[2] = HAL_TIM_ReadCapturedValue(&htim2,TIM_CHANNEL_1);//Get capture value now
-				HAL_TIM_IC_Stop_IT(&htim2,TIM_CHANNEL_1); //Stop input capture    OR: __HAL_TIM_DISABLE(&htim5);
-				high_time = capture_Buf[1] - capture_Buf[0];    //high level time
-				low_time = capture_Buf[2] - capture_Buf[1];			//low level time
+				capture_Buf[2] = HAL_TIM_ReadCapturedValue(&htim2,TIM_CHANNEL_1);						//Get capture value now
+				HAL_TIM_IC_Stop_IT(&htim2,TIM_CHANNEL_1); 			//Stop input capture    OR: __HAL_TIM_DISABLE(&htim5);
+				high_time = capture_Buf[1] - capture_Buf[0] + overload_Cnt * 0xFFFFFFFF;    //high level time
+				low_time = capture_Buf[2] - capture_Buf[1] + overload_Cnt * 0xFFFFFFFF;			//low level time
 				HL_time = high_time * 0.001;
 				LL_time = low_time * 0.001;
 				fre = 1/(HL_time + LL_time) * 1000;
 				duty = HL_time/(HL_time + LL_time) * 100;
 				capture_Cnt = 0;  //Clear the flag
+				overload_Cnt = 0; //Clear the overload flag
 				__HAL_TIM_SET_CAPTUREPOLARITY(&htim2, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);
-				HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);	//Start input capture       OR: __HAL_TIM_ENABLE(&htim5);
+				HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);			//Start input capture       OR: __HAL_TIM_ENABLE(&htim5);
 				break;	
-				
 		}
 	
 	}
 	
 }
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -137,7 +157,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-	__HAL_TIM_SET_CAPTUREPOLARITY(&htim2, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);
+	__HAL_TIM_SET_CAPTUREPOLARITY(&htim2, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);	//Set to falling edge capture
 	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);	//Start input capture       OR: __HAL_TIM_ENABLE(&htim5);
   /* USER CODE END 2 */
 
@@ -148,7 +168,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		//HAL_UART_Transmit(&huart1, (uint8_t *)high_time, 1, 0xffff);   //Send data
 		printf("FREQUENCY: %7.3lfHz, %4.1lf%%, HIGHLEVEL_TIME: %7.3lfms, LOWLEVEL_TIME: %7.3lf ms\r\n\r\n", fre, duty, HL_time, LL_time);	//Send data
 		HAL_Delay(2000);
   }
