@@ -3,8 +3,9 @@ This project aims to document the learning process of STM32L476RG and Hardware A
 
 
 CONTENTS:
-1. STM32L476RG_GPIO: Pressing the button PC13 to change the state of the LED2
+1. STM32L476RG_GPIO: Press the button to toggle LED2
 2. STM32L476RG_USART_INTERUPT: Sending and reciving interupt by USART(Asynchronous)
 3. STM32L476RG_PWM: Breathing light
 4. STM32L476RG_TIMER_INTERUPT: Chang the state of the LED2 (Period of Interupt: 1s)
 5. STM32L476RG_INPUTCAPTURE: Output a PWM(Frequency:1kHz, Duty:50%) and capture it, print the frequency\duty\high level time and low level time by usart
+6. STM32L476RG_EXTERNAL_INTERUPT: Press the button to toggle LED2(Interupt)
