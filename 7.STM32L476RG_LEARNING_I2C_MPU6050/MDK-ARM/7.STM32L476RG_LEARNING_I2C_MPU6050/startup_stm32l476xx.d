@@ -1,0 +1,1 @@
+7.stm32l476rg_learning_i2c_mpu6050\startup_stm32l476xx.o: startup_stm32l476xx.s
