@@ -9,3 +9,5 @@ CONTENTS:
 4. STM32L476RG_TIMER_INTERUPT: Chang the state of the LED2 (Period of Interupt: 1s)
 5. STM32L476RG_INPUTCAPTURE: Output a PWM(Frequency:1kHz, Duty:50%) and capture it, print the frequency\duty\high level time and low level time by usart
 6. STM32L476RG_EXTERNAL_INTERUPT: Press the button to toggle LED2(Interupt)
+7. STM32L476RG_LEARNING_I2C_MPU6050: Get raw data from mpu6050 using hardware I2C
+8. STM32L476RG_USART_DMA: Use DMA to complete USART sending and receiving
