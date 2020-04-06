@@ -60,6 +60,7 @@ static void MX_USART2_UART_Init(void);
   * @param ch, *f
   * @retval 0
   */
+
 int fputc(int ch, FILE *f)
 {
 	HAL_UART_Transmit(&huart1, (uint8_t*)&ch, 1, 1000);
