@@ -39,7 +39,7 @@ extern "C" {
 /* USER CODE BEGIN ET */
 
 /* Sensor Data Package */
-/* Example: 0x59 0x59 */
+/* Example: 0x59 0x59 0xC8 0x00 0xF4 0x01 0xC0 0x08 0x37 */
 typedef struct{
 	int16_t Dist;	
 	int16_t Strength;	
