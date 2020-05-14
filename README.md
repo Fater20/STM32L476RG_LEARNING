@@ -12,3 +12,4 @@ CONTENTS:
 7. STM32L476RG_LEARNING_I2C_MPU6050: Get raw data from mpu6050 using hardware I2C
 8. STM32L476RG_USART_DMA: Use DMA to complete USART sending and receiving
 9. STM32L476RG_USARTRXData_Process: Four examples of USART data processing
+10.STM32L476RG_FreeRTOS: An easy FreeRTOS example.
